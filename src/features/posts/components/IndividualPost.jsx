@@ -1,9 +1,14 @@
 import React, { useEffect } from "react";
-import { Avatar, Carousel } from "antd";
-import { HeartOutlined, UserOutlined, HeartFilled } from "@ant-design/icons";
+import { Avatar, Carousel, Button, notification } from "antd";
+import {
+  HeartOutlined,
+  UserOutlined,
+  HeartFilled,
+  DeleteTwoTone,
+} from "@ant-design/icons";
 import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
-import { addLike, removeLike, isLiked } from "../api/posts.api";
+import { addLike, removeLike, isLiked, addComment } from "../api/posts.api";
 import { useNavigate } from "react-router-dom";
 
 function IndividualPost({
@@ -17,6 +22,7 @@ function IndividualPost({
 }) {
   const [liked, setLiked] = React.useState(false);
   const curUser = useSelector((state) => state.auth.user);
+  const [comment, setComment] = React.useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,6 +54,21 @@ function IndividualPost({
         setLiked(true);
       });
     }
+  };
+
+  const addcomment = () => {
+    console.log("comment", comment);
+    dispatch(
+      addComment({ postId: id, userId: curUser.id, content: comment })
+    ).then((res) => {
+      if (res.error) {
+        notification.error({
+          message: "Error",
+          description: "Failed to add comment",
+        });
+      }
+      setComment("");
+    });
   };
 
   return (
@@ -106,9 +127,14 @@ function IndividualPost({
 
       <div>
         {comments?.map((comment, index) => (
-          <div key={index} className="mb-2">
-            <span className="font-semibold">{comment.user.firstName}</span>{" "}
+          <div key={index} className="mb-2 flex w-full">
+            <span className="font-semibold mr-4">{comment.user.firstName}</span>{" "}
             {comment.content}
+            {(curUser.id == comment.user.id || user.id == curUser.id) && (
+              <span className="self-end">
+                <Button icon={<DeleteTwoTone twoToneColor="#eb2f96" />} />
+              </span>
+            )}
           </div>
         ))}
       </div>
@@ -118,8 +144,12 @@ function IndividualPost({
           type="text"
           placeholder="Add a comment"
           className="w-full border rounded p-2 mr-8"
+          onChange={(e) => setComment(e.target.value)}
         />
-        <button className="bg-transparent text-slate-500 p-2 rounded">
+        <button
+          className="bg-transparent text-slate-500 p-2 rounded"
+          onClick={addcomment}
+        >
           Post
         </button>
       </div>

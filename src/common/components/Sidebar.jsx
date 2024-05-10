@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import CreatePostModal from "../../features/posts/modals/CreatePostModal";
 import CreateStatusModal from "../../features/posts/modals/CreateStatusModal";
+import CreateMealPlanModal from "../../features/meals/modals/CreateMealPlanModal";
 
 const items = [
   {
@@ -33,10 +34,15 @@ const items = [
 ];
 
 import SideButton from "./SideButton";
+import CreateWorkoutModal from "../../features/workouts/modals/CreateWorkoutPlanModal";
 
 function Sidebar() {
   const [CreatePostModalOpen, setCreatePostModalOpen] = React.useState(false);
   const [CreateStatusModalOpen, setCreateStatusModalOpen] =
+    React.useState(false);
+  const [CreateWorkoutPlanModalOpen, setCreateWorkoutPlanModalOpen] =
+    React.useState(false);
+  const [CreateMealPlanModalOpen, setCreateMealPlanModalOpen] =
     React.useState(false);
 
   const onClick = (e) => {
@@ -45,6 +51,10 @@ function Sidebar() {
       setCreatePostModalOpen(true);
     } else if (e.key === "addNewStatus") {
       setCreateStatusModalOpen(true);
+    } else if (e.key === "createNewWorkoutPlan") {
+      setCreateWorkoutPlanModalOpen(true);
+    } else if (e.key === "createNewMealPlan") {
+      setCreateMealPlanModalOpen(true);
     }
   };
 
@@ -82,6 +92,14 @@ function Sidebar() {
       <CreateStatusModal
         open={CreateStatusModalOpen}
         onClose={() => setCreateStatusModalOpen(false)}
+      />
+      <CreateWorkoutModal
+        open={CreateWorkoutPlanModalOpen}
+        onClose={() => setCreateWorkoutPlanModalOpen(false)}
+      />
+      <CreateMealPlanModal
+        open={CreateMealPlanModalOpen}
+        onClose={() => setCreateMealPlanModalOpen(false)}
       />
     </div>
   );

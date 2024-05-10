@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 function IndividualWorkoutContainer({ workout }) {
   const { id } = workout?.user;
   const navigate = useNavigate();
-  console.log(workout);
   return (
     <div className="bg-white p-4 mb-4 rounded-lg shadow">
       <div className="flex items-center mb-4">

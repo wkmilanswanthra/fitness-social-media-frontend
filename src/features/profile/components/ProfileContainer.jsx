@@ -63,13 +63,13 @@ function ProfileContainer() {
         {posts?.map((post, index) => (
           <IndividualPost
             key={index}
-            user={post.user}
-            media={post.mediaFiles}
-            type={post.mediaType}
-            likeCount={post.likesCount}
+            user={post.post?.user}
+            media={post.post?.mediaFiles}
+            type={post.post?.mediaType}
+            likeCount={post.post?.likesCount}
             comments={post.comments}
-            description={post.description}
-            id={post.postID}
+            description={post.post?.description}
+            id={post.post?.postID}
           />
         ))}
       </div>

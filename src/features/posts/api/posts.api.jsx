@@ -116,3 +116,42 @@ export const createStatusUpdate = createAsyncThunk(
     }
   }
 );
+
+export const addComment = createAsyncThunk(
+  "posts/addComment",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.post(
+        `comments/${data.postId}/users/${data.userId}`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  "posts/deleteComment",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`comments/${data.commentId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const editComment = createAsyncThunk(
+  "posts/editComment",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`comments/${data.commentId}`, data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
