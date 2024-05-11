@@ -2,6 +2,10 @@ import React from "react";
 import { Avatar, Carousel } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useSelector, useDispatch } from "react-redux";
+import { updateMeal, deleteMeal } from "../api/meals.api";
+import UpdateMealPlanModal from "../modals/UpdateMealPlanModal";
 
 function IndividualMealsContainer({
   user,
@@ -11,19 +15,43 @@ function IndividualMealsContainer({
   cookingInstructions,
   photos,
   dietaryPreferences,
+  mealID,
 }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const curUser = useSelector((state) => state.auth.user);
+  const [open, setOpen] = React.useState(false);
+
+  const handleDeleteMeal = (id) => {
+    console.log("Delete Meal");
+    dispatch(deleteMeal(id));
+    navigate(0);
+  };
 
   return (
     <div className="bg-white p-6 mb-6 rounded-lg shadow-md">
-      <div className="flex items-center mb-4">
-        <Avatar icon={<UserOutlined />} />
-        <span
-          className="font-semibold ml-4 text-lg cursor-pointer"
-          onClick={() => navigate(`/user/${user?.id}`)}
-        >
-          {user?.firstName}
-        </span>
+      <div className="flex items-center mb-4 justify-between">
+        <div>
+          <Avatar icon={<UserOutlined />} />
+          <span
+            className="font-semibold ml-4 text-lg cursor-pointer"
+            onClick={() => navigate(`/user/${user?.id}`)}
+          >
+            {user?.firstName}
+          </span>
+        </div>
+        {user.id == curUser.id && (
+          <div>
+            <EditOutlined
+              className="ml-4 text-blue-500 cursor-pointer"
+              onClick={() => setOpen(true)}
+            />
+            <DeleteOutlined
+              className="ml-4 text-red-500 cursor-pointer"
+              onClick={() => handleDeleteMeal(mealID)}
+            />
+          </div>
+        )}
       </div>
 
       <div className="mb-4">
@@ -81,6 +109,17 @@ function IndividualMealsContainer({
           ))}
         </ul>
       </div>
+      <UpdateMealPlanModal
+        open={open}
+        setOpen={setOpen}
+        mealID={mealID}
+        mealName={mealName}
+        description={description}
+        ingredients={ingredients}
+        cookingInstructions={cookingInstructions}
+        photos={photos}
+        dietaryPreferences={dietaryPreferences}
+      />
     </div>
   );
 }

@@ -1,32 +1,59 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal, Form, Input, Button, Upload, message, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { PlusOutlined } from "@ant-design/icons";
-import { createMeal } from "../api/meals.api";
+import { updateMeal } from "../api/meals.api";
 
 const { Option } = Select;
 
-const CreateMealPlanModal = ({ open, onClose }) => {
+const UpdateMealPlanModal = ({
+  open,
+  setOpen,
+  mealID,
+  mealName,
+  description,
+  ingredients,
+  cookingInstructions,
+  photos,
+  dietaryPreferences,
+}) => {
   const [form] = Form.useForm();
 
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      mealName,
+      description,
+      ingredients,
+      cookingInstructions,
+      photos,
+      dietaryPreferences,
+    });
+  }, [
+    mealName,
+    description,
+    ingredients,
+    cookingInstructions,
+    photos,
+    dietaryPreferences,
+  ]);
 
   const onFinish = async (values) => {
     const data = {
       user: {
         id: user.id,
       },
+      mealID,
       mealName: values.mealName,
       description: values.description,
       ingredients: values.ingredients,
       cookingInstructions: values.cookingInstructions,
-      photos: values.photos,
       dietaryPreferences: values.dietaryPreferences,
     };
     console.log("Meal Plan:", data);
     try {
-      dispatch(createMeal(data));
+      dispatch(updateMeal(data));
       handleClose();
       message.success("Meal plan created successfully!");
     } catch (error) {
@@ -36,13 +63,13 @@ const CreateMealPlanModal = ({ open, onClose }) => {
 
   const handleClose = () => {
     form.resetFields();
-    onClose();
+    setOpen(false);
   };
 
   return (
     <Modal
       title="Create Meal Plan"
-      visible={open}
+      open={open}
       onCancel={handleClose}
       footer={null}
     >
@@ -81,7 +108,7 @@ const CreateMealPlanModal = ({ open, onClose }) => {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-            Create Meal Plan
+            Update Meal Plan
           </Button>
         </Form.Item>
       </Form>
@@ -89,4 +116,4 @@ const CreateMealPlanModal = ({ open, onClose }) => {
   );
 };
 
-export default CreateMealPlanModal;
+export default UpdateMealPlanModal;

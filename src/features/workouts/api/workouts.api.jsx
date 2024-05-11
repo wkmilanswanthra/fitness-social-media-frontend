@@ -56,7 +56,7 @@ export const updateWorkout = createAsyncThunk(
   "workouts/updateWorkout",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await api.put(`workoutPlans/${data.id}`, data);
+      const response = await api.patch(`workoutPlans/${data.planID}`, data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

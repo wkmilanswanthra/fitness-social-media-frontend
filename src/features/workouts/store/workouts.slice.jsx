@@ -58,12 +58,6 @@ const workoutsSlice = createSlice({
       .addCase(updateWorkout.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updateWorkout.fulfilled, (state, action) => {
-        state.workouts = state.workouts.map((workout) =>
-          workout.id === action.payload.id ? action.payload : workout
-        );
-        state.loading = false;
-      })
       .addCase(updateWorkout.rejected, (state, action) => {
         state.error = action.payload;
         state.loading = false;

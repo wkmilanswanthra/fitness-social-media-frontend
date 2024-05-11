@@ -26,3 +26,29 @@ export const getMeals = createAsyncThunk(
     }
   }
 );
+
+export const updateMeal = createAsyncThunk(
+  "meals/updateMeal",
+  async (data, { rejectWithValue }) => {
+    try {
+      const api = makeApi();
+      const response = await api.patch(`/mealPlans/${data.mealID}`, data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const deleteMeal = createAsyncThunk(
+  "meals/deleteMeal",
+  async (mealId, { rejectWithValue }) => {
+    try {
+      const api = makeApi();
+      const response = await api.delete(`/mealPlans/${mealId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
