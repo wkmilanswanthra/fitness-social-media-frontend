@@ -22,7 +22,7 @@ function IndividualMealsContainer({
           className="font-semibold ml-4 text-lg cursor-pointer"
           onClick={() => navigate(`/user/${user?.id}`)}
         >
-          {user?.username}
+          {user?.firstName}
         </span>
       </div>
 
@@ -31,17 +31,41 @@ function IndividualMealsContainer({
         <p className="text-gray-700">{description}</p>
       </div>
 
-      <div className="mb-4">
-        <h3 className="font-semibold mb-2">Ingredients:</h3>
-        <ul className="list-disc list-inside">
-          {ingredients?.map((ingredient, index) => (
-            <li key={index} className="ml-4 text-gray-700">
-              {ingredient}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <div className="flex justify-between">
+        <div className="mb-4">
+          <h3 className="font-semibold mb-2">Ingredients:</h3>
+          <ul className="list-disc list-inside">
+            {ingredients?.map((ingredient, index) => (
+              <li key={index} className="ml-4 text-gray-700">
+                {ingredient}
+              </li>
+            ))}
+          </ul>
+        </div>
 
+        <Carousel
+          autoplay
+          style={{
+            width: "100px",
+            height: "100px",
+          }}
+        >
+          {photos?.map((photo, index) => (
+            <div key={index}>
+              <img
+                src={photo}
+                alt="meal"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  objectFit: "cover",
+                  borderRadius: "20%",
+                }}
+              />
+            </div>
+          ))}
+        </Carousel>
+      </div>
       <div className="mb-4">
         <h3 className="font-semibold mb-2">Cooking Instructions:</h3>
         <p className="text-gray-700">{cookingInstructions}</p>
