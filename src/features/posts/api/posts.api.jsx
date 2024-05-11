@@ -148,7 +148,7 @@ export const editComment = createAsyncThunk(
   "posts/editComment",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await api.put(`comments/${data.commentId}`, data);
+      const response = await api.patch(`comments/${data.commentId}`, data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

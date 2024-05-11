@@ -5,6 +5,7 @@ import {
   UserOutlined,
   HeartFilled,
   DeleteTwoTone,
+  EditOutlined,
 } from "@ant-design/icons";
 import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +15,7 @@ import {
   isLiked,
   addComment,
   deleteComment,
+  editComment,
   getAllPosts,
   deletePost,
 } from "../api/posts.api";
@@ -32,6 +34,7 @@ function IndividualPost({
   const [liked, setLiked] = React.useState(false);
   const curUser = useSelector((state) => state.auth.user);
   const [comment, setComment] = React.useState("");
+  const [editedComment, setEditedComment] = React.useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -69,6 +72,22 @@ function IndividualPost({
 
   const addcomment = () => {
     console.log("comment", comment);
+    if (editedComment) {
+      dispatch(
+        editComment({ commentId: editedComment, content: comment })
+      ).then((res) => {
+        if (res.error) {
+          notification.error({
+            message: "Error",
+            description: "Failed to add comment",
+          });
+        }
+        setComment("");
+        setEditedComment("");
+        dispatch(getAllPosts());
+      });
+      return;
+    }
     dispatch(
       addComment({ postId: id, userId: curUser.id, content: comment })
     ).then((res) => {
@@ -110,6 +129,12 @@ function IndividualPost({
     });
   };
 
+  const handleEditComment = (commentId, comment) => {
+    console.log("commentId", commentId);
+    setEditedComment(commentId);
+    setComment(comment);
+  };
+
   return (
     <div className="bg-white p-4 mb-4 rounded-lg shadow">
       <div className="flex items-center mb-2 justify-between">
@@ -124,7 +149,7 @@ function IndividualPost({
         </div>
         {isProfile && curUser.id == user.id && (
           <DeleteTwoTone
-            twoToneColor={"#880808"}
+            twoToneColor={"#ff0000"}
             className="ml-4 cursor-pointer"
             onClick={() => handleDeletePost(id)}
           />
@@ -175,7 +200,7 @@ function IndividualPost({
 
       <div>
         {comments?.map((comment, index) => (
-          <div key={index} className="mb-2 flex w-full justify-between">
+          <div key={index} className=" flex w-full justify-between">
             <div>
               <span className="font-semibold mr-4">
                 {comment.user.firstName}
@@ -184,9 +209,17 @@ function IndividualPost({
             </div>
             {(curUser.id == comment.user.id || user.id == curUser.id) && (
               <span className="self-end ml-4">
+                {curUser.id == comment.user.id && (
+                  <EditOutlined
+                    twoToneColor="#0000ff"
+                    onClick={() =>
+                      handleEditComment(comment.commentID, comment.content)
+                    }
+                  />
+                )}
                 <Button
                   type="link"
-                  icon={<DeleteTwoTone twoToneColor="#880808" />}
+                  icon={<DeleteTwoTone twoToneColor="#ff0000" />}
                   onClick={() => handleDeleteComment(comment.commentID)}
                 />
               </span>

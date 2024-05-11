@@ -20,9 +20,9 @@ function IndividualMealsContainer({
         <Avatar icon={<UserOutlined />} />
         <span
           className="font-semibold ml-4 text-lg cursor-pointer"
-          onClick={() => navigate(`/user/${user.id}`)}
+          onClick={() => navigate(`/user/${user?.id}`)}
         >
-          {user.username}
+          {user?.username}
         </span>
       </div>
 
@@ -34,7 +34,7 @@ function IndividualMealsContainer({
       <div className="mb-4">
         <h3 className="font-semibold mb-2">Ingredients:</h3>
         <ul className="list-disc list-inside">
-          {ingredients.map((ingredient, index) => (
+          {ingredients?.map((ingredient, index) => (
             <li key={index} className="ml-4 text-gray-700">
               {ingredient}
             </li>
@@ -50,7 +50,7 @@ function IndividualMealsContainer({
       <div className="mb-4">
         <h3 className="font-semibold mb-2">Dietary Preferences:</h3>
         <ul className="list-disc list-inside">
-          {dietaryPreferences.map((preference, index) => (
+          {dietaryPreferences?.map((preference, index) => (
             <li key={index} className="ml-4 text-gray-700">
               {preference}
             </li>

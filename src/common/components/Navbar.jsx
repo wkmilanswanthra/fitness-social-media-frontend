@@ -23,10 +23,6 @@ function Navbar() {
 
   const items = [
     {
-      key: "1",
-      label: <a target="_blank">Profile</a>,
-    },
-    {
       key: "2",
       label: (
         <button onClick={handleLogout} target="_blank">

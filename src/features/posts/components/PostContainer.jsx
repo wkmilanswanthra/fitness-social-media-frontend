@@ -10,13 +10,13 @@ function PostContainer() {
       {posts?.map((post, index) => (
         <IndividualPost
           key={index}
-          user={post.post.user}
-          media={post.post.mediaFiles}
-          type={post.post.mediaType}
-          likeCount={post.post.likesCount}
-          comments={post.comments}
-          description={post.post.description}
-          id={post.post.postID}
+          user={post?.post?.user}
+          media={post?.post?.mediaFiles}
+          type={post?.post?.mediaType}
+          likeCount={post?.post?.likesCount}
+          comments={post?.comments}
+          description={post?.post?.description}
+          id={post?.post?.postID}
           isProfile={false}
         />
       ))}

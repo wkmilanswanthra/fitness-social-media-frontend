@@ -13,3 +13,16 @@ export const createMeal = createAsyncThunk(
     }
   }
 );
+
+export const getMeals = createAsyncThunk(
+  "meals/getMeals",
+  async (_, { rejectWithValue }) => {
+    try {
+      const api = makeApi();
+      const response = await api.get("/mealPlans");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
