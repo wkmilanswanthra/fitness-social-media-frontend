@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getNotifications } from "../../features/posts/api/posts.api";
-import { Modal } from "antd";
+import { Modal, Alert } from "antd";
 
 function NotificationsModal({ visible, setVisible }) {
   const { notifications } = useSelector((state) => state.posts);
@@ -27,9 +27,19 @@ function NotificationsModal({ visible, setVisible }) {
       {notifications?.map((notification, index) => {
         return (
           <div key={index} className="flex justify-between items-center">
-            {notification.user.firstName} {notification.user.lastName}{" "}
-            {notification.notficationType === "like" ? "liked" : "commented on"}{" "}
-            your post
+            <Alert
+              className="w-full mt-4"
+              message={`${notification.user.firstName} ${
+                notification.user.lastName
+              } 
+            ${
+              notification.notificationType === "like"
+                ? "liked"
+                : "commented on"
+            }   
+            your post`}
+              type="info"
+            />
           </div>
         );
       })}

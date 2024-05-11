@@ -50,3 +50,15 @@ export const updateProfile = createAsyncThunk(
     }
   }
 );
+
+export const deleteStatusUpdate = createAsyncThunk(
+  "profile/deleteStatusUpdate",
+  async (statusUpdateId, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`workoutMetrics/${statusUpdateId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);

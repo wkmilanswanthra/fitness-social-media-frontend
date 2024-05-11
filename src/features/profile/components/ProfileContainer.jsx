@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { Avatar, Button, Form, Input } from "antd";
-import { UserOutlined, EditOutlined } from "@ant-design/icons";
+import { UserOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   getAllPosstsByUserId,
   getAllStatusUpdatesByUserId,
   updateProfile,
+  deleteStatusUpdate,
 } from "../api/profile.api";
 import IndividualPost from "../../posts/components/IndividualPost";
 
@@ -86,16 +87,38 @@ function ProfileContainer() {
 }
 
 function UserStatusUpdates({ statusUpdates }) {
+  const user = useSelector((state) => state.auth.user);
+
+  const dispatch = useDispatch();
+
+  const handleDeleteStatusUpdate = (statusUpdateId) => {
+    console.log("Delete Status Update", statusUpdateId);
+    dispatch(deleteStatusUpdate(statusUpdateId));
+    dispatch(getAllStatusUpdatesByUserId(user.id));
+  };
   return (
     <div className="bg-white p-4 mb-4 rounded-lg shadow">
       <h2 className="text-lg font-semibold mb-4">Status Updates</h2>
       {statusUpdates.length === 0 && <p>No status updates found</p>}
       {statusUpdates.map((update, index) => (
-        <div key={index} className="mb-2 p-4 border rounded-lg">
-          <p>{update.description}</p>
-          <p>
-            {update.metricType}: {update.metricValue}
-          </p>
+        <div
+          key={index}
+          className="mb-2 p-4 border rounded-lg flex justify-between"
+        >
+          <div>
+            <p>{update.description}</p>
+            <p>
+              {update.metricType}: {update.metricValue}
+            </p>
+          </div>
+          {update?.user?.id == user?.id && (
+            <Button
+              type="danger"
+              className="mt-2"
+              icon={<DeleteOutlined color="#ff0000" />}
+              onClick={() => handleDeleteStatusUpdate(update.metricID)}
+            ></Button>
+          )}
         </div>
       ))}
     </div>
