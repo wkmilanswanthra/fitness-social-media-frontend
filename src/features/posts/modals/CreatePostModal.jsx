@@ -14,15 +14,19 @@ const CreatePostModal = ({ open, onClose }) => {
 
   const onFinish = (values) => {
     console.log("Form values:", values);
-    const mediaType = fileList.some((file) => file.type.includes("image"))
-      ? "images"
-      : "video";
+    console.log("File List:", fileList);
+    let mediaType = "images";
+    if (fileList.some((file) => file.type.includes("video"))) {
+      mediaType = "video";
+    }
     dispatch(
       createPost({
         ...values,
         mediaFiles: fileList,
         mediaType,
-        user_id: user.id,
+        user: {
+          id: user?.id,
+        },
       })
     );
     onClose();
@@ -54,22 +58,17 @@ const CreatePostModal = ({ open, onClose }) => {
           <Upload
             fileList={fileList}
             onChange={(info) => {
-              if (info.file.status !== "uploading") {
-                console.log(info.file, info.fileList);
-              }
               console.log(info);
               if (info.file.status === "done") {
-                console.log(info.file);
-                message.success(`${info.file.name} file uploaded successfully`);
-              } else if (info.file.status === "error") {
-                message.error(`${info.file.name} file upload failed.`);
+                console.log(info.file.response);
               }
             }}
-            action={"http://localhost:8081/api/v1/posts/upload"}
+            action="http://localhost:8081/api/v1/posts/upload"
+            listType="picture"
             maxCount={3}
             accept="image/*,video/*"
           >
-            <Button icon={<UploadOutlined />}>Upload</Button>
+            <Button icon={<UploadOutlined />}>Upload (Max: 3)</Button>
           </Upload>
         </Form.Item>
         <Form.Item>

@@ -2,9 +2,11 @@ import React, { useEffect } from "react";
 import { Avatar, Button, Form, Input } from "antd";
 import { UserOutlined, EditOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   getAllPosstsByUserId,
   getAllStatusUpdatesByUserId,
+  updateProfile,
 } from "../api/profile.api";
 import IndividualPost from "../../posts/components/IndividualPost";
 
@@ -13,13 +15,18 @@ function ProfileContainer() {
   const { statusUpdates, posts } = useSelector((state) => state.profile);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getAllStatusUpdatesByUserId(user.id));
     dispatch(getAllPosstsByUserId(user.id));
   }, []);
 
-  const handleEditProfile = () => {};
+  const handleEditProfile = (data) => {
+    console.log("Edit Profile", data);
+    dispatch(updateProfile({ ...data, id: user.id }));
+    navigate(0);
+  };
 
   return (
     <div className="w-full px-12 pt-10 mt-14 pb-16">
@@ -70,6 +77,7 @@ function ProfileContainer() {
             comments={post.comments}
             description={post.post?.description}
             id={post.post?.postID}
+            isProfile={true}
           />
         ))}
       </div>

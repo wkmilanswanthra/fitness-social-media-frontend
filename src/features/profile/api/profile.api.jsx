@@ -38,3 +38,15 @@ export const getAllStatusUpdatesByUserId = createAsyncThunk(
     }
   }
 );
+
+export const updateProfile = createAsyncThunk(
+  "profile/updateProfile",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`user/${data.id}`, data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);

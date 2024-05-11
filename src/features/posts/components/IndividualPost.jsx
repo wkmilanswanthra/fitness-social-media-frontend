@@ -8,7 +8,15 @@ import {
 } from "@ant-design/icons";
 import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
-import { addLike, removeLike, isLiked, addComment } from "../api/posts.api";
+import {
+  addLike,
+  removeLike,
+  isLiked,
+  addComment,
+  deleteComment,
+  getAllPosts,
+  deletePost,
+} from "../api/posts.api";
 import { useNavigate } from "react-router-dom";
 
 function IndividualPost({
@@ -19,6 +27,7 @@ function IndividualPost({
   description,
   type,
   id,
+  isProfile,
 }) {
   const [liked, setLiked] = React.useState(false);
   const curUser = useSelector((state) => state.auth.user);
@@ -45,6 +54,7 @@ function IndividualPost({
           return;
         }
         setLiked(false);
+        dispatch(getAllPosts());
       });
     } else {
       dispatch(addLike({ postId: id, userId: curUser.id })).then((res) => {
@@ -52,6 +62,7 @@ function IndividualPost({
           return;
         }
         setLiked(true);
+        dispatch(getAllPosts());
       });
     }
   };
@@ -68,19 +79,56 @@ function IndividualPost({
         });
       }
       setComment("");
+      dispatch(getAllPosts());
+    });
+  };
+
+  const handleDeleteComment = (commentId) => {
+    console.log("commentId", commentId);
+    dispatch(deleteComment({ commentId })).then((res) => {
+      if (res.error) {
+        notification.error({
+          message: "Error",
+          description: "Failed to delete comment",
+        });
+      }
+      dispatch(getAllPosts());
+    });
+  };
+
+  const handleDeletePost = (postId) => {
+    console.log("postId", postId);
+    dispatch(deletePost(postId)).then((res) => {
+      if (res.error) {
+        notification.error({
+          message: "Error",
+          description: "Failed to delete post",
+        });
+      }
+      dispatch(getAllPosts());
+      navigate(0);
     });
   };
 
   return (
     <div className="bg-white p-4 mb-4 rounded-lg shadow">
-      <div className="flex items-center mb-2">
-        <Avatar icon={<UserOutlined />} />
-        <span
-          className="font-semibold ml-4 cursor-pointer"
-          onClick={() => navigate(`user/${user.id}`)}
-        >
-          {user?.firstName}
-        </span>
+      <div className="flex items-center mb-2 justify-between">
+        <div>
+          <Avatar icon={<UserOutlined />} />
+          <span
+            className="font-semibold ml-4 cursor-pointer"
+            onClick={() => navigate(`user/${user.id}`)}
+          >
+            {user?.firstName}
+          </span>
+        </div>
+        {isProfile && curUser.id == user.id && (
+          <DeleteTwoTone
+            twoToneColor={"#880808"}
+            className="ml-4 cursor-pointer"
+            onClick={() => handleDeletePost(id)}
+          />
+        )}
       </div>
 
       <div className="mb-2">
@@ -121,18 +169,26 @@ function IndividualPost({
         <span>{likeCount}</span>
       </div>
       <div className="flex items-center mb-4">
-        <span className="font-semibold mr-2">{user?.username}</span>
+        <span className="font-semibold mr-2">{user?.firstName}</span>
         {description}
       </div>
 
       <div>
         {comments?.map((comment, index) => (
-          <div key={index} className="mb-2 flex w-full">
-            <span className="font-semibold mr-4">{comment.user.firstName}</span>{" "}
-            {comment.content}
+          <div key={index} className="mb-2 flex w-full justify-between">
+            <div>
+              <span className="font-semibold mr-4">
+                {comment.user.firstName}
+              </span>{" "}
+              {comment.content}
+            </div>
             {(curUser.id == comment.user.id || user.id == curUser.id) && (
-              <span className="self-end">
-                <Button icon={<DeleteTwoTone twoToneColor="#eb2f96" />} />
+              <span className="self-end ml-4">
+                <Button
+                  type="link"
+                  icon={<DeleteTwoTone twoToneColor="#880808" />}
+                  onClick={() => handleDeleteComment(comment.commentID)}
+                />
               </span>
             )}
           </div>
@@ -145,6 +201,7 @@ function IndividualPost({
           placeholder="Add a comment"
           className="w-full border rounded p-2 mr-8"
           onChange={(e) => setComment(e.target.value)}
+          value={comment}
         />
         <button
           className="bg-transparent text-slate-500 p-2 rounded"

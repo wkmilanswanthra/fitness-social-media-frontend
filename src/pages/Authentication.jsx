@@ -52,7 +52,12 @@ function Authentication() {
             <Outlet />
             <Divider />
             <div className="text-center">
-              <Button type="default" icon={<GithubOutlined />} block>
+              <Button
+                type="default"
+                icon={<GithubOutlined />}
+                block
+                href="http://localhost:8081/api/v1/oauth2/authorization/github"
+              >
                 Login with GitHub
               </Button>
             </div>

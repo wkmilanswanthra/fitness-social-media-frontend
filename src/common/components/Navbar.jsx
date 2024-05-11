@@ -17,9 +17,8 @@ function Navbar() {
 
   const handleLogout = () => {
     console.log("Logout");
-    dispatch(logout()).then(() => {
-      navigate("/");
-    });
+    navigate("/");
+    dispatch(logout()).then(() => {});
   };
 
   const items = [
@@ -53,7 +52,7 @@ function Navbar() {
           <Space>
             <Avatar icon={<UserOutlined />} />
             <span className="text-lg font-semibold">
-              {user.firstName} {user.lastName}
+              {user?.firstName} {user?.lastName}
             </span>
             <DownOutlined style={{ fontSize: "80%" }} />
           </Space>

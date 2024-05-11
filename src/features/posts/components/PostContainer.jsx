@@ -17,6 +17,7 @@ function PostContainer() {
           comments={post.comments}
           description={post.post.description}
           id={post.post.postID}
+          isProfile={false}
         />
       ))}
     </div>

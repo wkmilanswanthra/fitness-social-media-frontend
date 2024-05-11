@@ -51,9 +51,10 @@ function ProfileViewerContainer() {
             media={post?.post?.mediaFiles}
             type={post?.post?.mediaType}
             likeCount={post?.post?.likesCount}
-            comments={post?.post?.comments}
+            comments={post?.comments}
             description={post?.post?.description}
             id={post?.post?.postID}
+            isProfile={false}
           />
         ))}
       </div>
