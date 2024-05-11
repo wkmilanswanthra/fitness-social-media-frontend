@@ -1,5 +1,5 @@
-import React from "react";
-import { Menu, Dropdown, Button, Avatar, Image, Space } from "antd";
+import React, { useEffect } from "react";
+import { Menu, Dropdown, Button, Avatar, Image, Space, Tag } from "antd";
 import {
   UserOutlined,
   LogoutOutlined,
@@ -9,11 +9,19 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/auth/api/auth.api";
 import { useNavigate } from "react-router-dom";
+import { getNotifications } from "../../features/posts/api/posts.api";
+import NotificationsModal from "./NotificationsModal";
 
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
+  const { notifications } = useSelector((state) => state.posts);
+  const [visible, setVisible] = React.useState(false);
+
+  useEffect(() => {
+    dispatch(getNotifications(user.id));
+  }, []);
 
   const handleLogout = () => {
     console.log("Logout");
@@ -43,17 +51,31 @@ function Navbar() {
         <span className="text-xl font-bold">Train Together</span>
       </div>
 
-      <Dropdown menu={{ items }} placement="bottomRight" arrow>
-        <a onClick={(e) => e.preventDefault()}>
-          <Space>
-            <Avatar icon={<UserOutlined />} />
-            <span className="text-lg font-semibold">
-              {user?.firstName} {user?.lastName}
-            </span>
-            <DownOutlined style={{ fontSize: "80%" }} />
-          </Space>
-        </a>
-      </Dropdown>
+      <div>
+        <Button
+          type="Link"
+          className="text-lg font-semibold text-white mr-10 align-middle"
+          onClick={() => setVisible(true)}
+        >
+          Notifications{" "}
+          <Tag color="cyan" className="ml-4">
+            {notifications.length}
+          </Tag>
+        </Button>
+
+        <Dropdown menu={{ items }} placement="bottomRight" arrow>
+          <a onClick={(e) => e.preventDefault()}>
+            <Space>
+              <Avatar icon={<UserOutlined />} />
+              <span className="text-lg font-semibold">
+                {user?.firstName} {user?.lastName}
+              </span>
+              <DownOutlined style={{ fontSize: "80%" }} />
+            </Space>
+          </a>
+        </Dropdown>
+      </div>
+      <NotificationsModal visible={visible} setVisible={setVisible} />
     </div>
   );
 }

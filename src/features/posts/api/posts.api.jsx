@@ -55,7 +55,7 @@ export const updatePost = createAsyncThunk(
   "posts/updatePost",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await api.put(`posts/${data.id}`, data);
+      const response = await api.patch(`posts/${data.id}`, data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -149,6 +149,18 @@ export const editComment = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await api.patch(`comments/${data.commentId}`, data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getNotifications = createAsyncThunk(
+  "posts/getNotifications",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`notifications/${userId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

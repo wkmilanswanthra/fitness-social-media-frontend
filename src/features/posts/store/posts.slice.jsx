@@ -4,10 +4,12 @@ import {
   createPost,
   getPostById,
   deletePost,
+  getNotifications,
 } from "../api/posts.api";
 
 const initialState = {
   posts: [],
+  notifications: [],
   post: null,
   loading: false,
   error: null,
@@ -59,6 +61,17 @@ const postsSlice = createSlice({
       state.posts = state.posts.filter((post) => post.id !== action.payload.id);
     });
     builder.addCase(deletePost.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+    builder.addCase(getNotifications.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getNotifications.fulfilled, (state, action) => {
+      state.loading = false;
+      state.notifications = action.payload;
+    });
+    builder.addCase(getNotifications.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });

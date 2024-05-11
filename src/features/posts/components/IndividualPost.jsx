@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Avatar, Carousel, Button, notification } from "antd";
+import { Avatar, Carousel, Button, notification, Input } from "antd";
 import {
   HeartOutlined,
   UserOutlined,
@@ -18,6 +18,7 @@ import {
   editComment,
   getAllPosts,
   deletePost,
+  updatePost,
 } from "../api/posts.api";
 import { useNavigate } from "react-router-dom";
 
@@ -35,7 +36,8 @@ function IndividualPost({
   const curUser = useSelector((state) => state.auth.user);
   const [comment, setComment] = React.useState("");
   const [editedComment, setEditedComment] = React.useState("");
-
+  const [isEditingPost, setIsEditingPost] = React.useState(false);
+  const [newDescription, setNewDescription] = React.useState(description);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -193,9 +195,43 @@ function IndividualPost({
         </button>
         <span>{likeCount}</span>
       </div>
-      <div className="flex items-center mb-4">
-        <span className="font-semibold mr-2">{user?.firstName}</span>
-        {description}
+      <div className="flex items-center mb-4 justify-between">
+        <div>
+          <span className="font-semibold mr-2">{user?.firstName}</span>
+          {!isEditingPost && description}
+        </div>
+        {isProfile && isEditingPost && (
+          <>
+            <Input
+              className="w-full border rounded p-2"
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
+            ></Input>
+            <Button
+              className="mx-2"
+              type="primary"
+              onClick={() => {
+                dispatch(
+                  updatePost({
+                    id: id,
+                    description: newDescription,
+                    user: { id: user.id },
+                  })
+                );
+                setIsEditingPost(false);
+              }}
+            >
+              Save
+            </Button>
+          </>
+        )}
+        {isProfile && curUser.id == user.id && (
+          <EditOutlined
+            className="mr-2"
+            twoToneColor="#0000ff"
+            onClick={() => setIsEditingPost(!isEditingPost)}
+          />
+        )}
       </div>
 
       <div>
