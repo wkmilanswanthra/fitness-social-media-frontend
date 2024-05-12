@@ -19,6 +19,16 @@ const CreatePostModal = ({ open, onClose }) => {
     if (fileList.some((file) => file.type.includes("video"))) {
       mediaType = "video";
     }
+    if (fileList.length === 0) {
+      message.error("Please upload media files.");
+      return;
+    } else if (fileList.length > 3) {
+      form.setFields([
+        { name: "mediaFiles", errors: ["You can only upload up to 3 images."] },
+      ]);
+      return;
+    }
+
     dispatch(
       createPost({
         ...values,
@@ -44,6 +54,20 @@ const CreatePostModal = ({ open, onClose }) => {
     setFileList(fileList);
   };
 
+  const props = {
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: (file) => {
+      setFileList([...fileList, file]);
+      return false;
+    },
+    fileList,
+  };
+
   return (
     <Modal title="Create Post" open={open} onCancel={onClose} footer={null}>
       <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -59,20 +83,8 @@ const CreatePostModal = ({ open, onClose }) => {
           name="mediaFiles"
           rules={[{ required: true, message: "Please upload media files" }]}
         >
-          <Upload
-            fileList={fileList}
-            onChange={(info) => {
-              console.log(info);
-              if (info.file.status === "done") {
-                console.log(info.file.response);
-              }
-            }}
-            action="http://localhost:8081/api/v1/posts/upload"
-            listType="picture"
-            maxCount={3}
-            accept="image/*,video/*"
-          >
-            <Button icon={<UploadOutlined />}>Upload (Max: 3)</Button>
+          <Upload {...props} maxCount={3} multiple listType="picture">
+            <Button icon={<UploadOutlined />}>Select File</Button>
           </Upload>
         </Form.Item>
         <Form.Item>
