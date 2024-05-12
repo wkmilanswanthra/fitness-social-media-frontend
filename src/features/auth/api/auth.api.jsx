@@ -30,6 +30,18 @@ export const register = createAsyncThunk(
   }
 );
 
+export const registerGit = createAsyncThunk(
+  "auth/register/git",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.post("user/register/git", data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const loadUser = createAsyncThunk(
   "auth/loadUser",
   async (_, { rejectWithValue }) => {

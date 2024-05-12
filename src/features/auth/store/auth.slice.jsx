@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login, register, loadUser, logout } from "../api/auth.api";
+import {
+  login,
+  register,
+  loadUser,
+  logout,
+  registerGit,
+} from "../api/auth.api";
 const initialState = {
   user: null,
   isAuthenticated: false,
@@ -65,6 +71,20 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(logout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(registerGit.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(registerGit.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        state.token = action.payload.message;
+        state.error = null;
+      })
+      .addCase(registerGit.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

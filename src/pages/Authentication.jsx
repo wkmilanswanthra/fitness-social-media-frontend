@@ -11,16 +11,57 @@ import {
 } from "antd";
 import { UserOutlined, LockOutlined, GithubOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { login } from "../features/auth/api/auth.api";
 import { Outlet, useNavigate } from "react-router-dom";
+import { provider, auth } from "../common/utils/fireaseConfig";
+import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
+import { registerGit, login } from "../features/auth/api/auth.api";
 
 function Authentication() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
-    dispatch(login(values));
+  const handleGithubLogin = () => {
+    provider.addScope("user");
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GithubAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        console.log(user);
+        console.log(token);
+        const username = user.reloadUserInfo.screenName;
+        const firstName = user.displayName.split(" ")[0];
+        const lastName = user.displayName.split(" ")[1];
+        const email = user.email;
+        const password = user.uid;
+
+        dispatch(
+          registerGit({ username, firstName, lastName, email, password })
+        ).then((res) => {
+          if (res.payload.user) {
+            notification.success({
+              message: "Sign Up Successful",
+              description: "You have successfully signed up",
+            });
+            navigate("/");
+          } else {
+            notification.error({
+              message: "Sign Up Failed",
+              description: "Please check your credentials",
+            });
+          }
+        });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.email;
+        const credential = GithubAuthProvider.credentialFromError(error);
+        console.log(errorCode);
+        console.log(errorMessage);
+        console.log(email);
+        console.log(credential);
+      });
   };
 
   return (
@@ -56,7 +97,7 @@ function Authentication() {
                 type="default"
                 icon={<GithubOutlined />}
                 block
-                href="http://localhost:8081/api/v1/oauth2/authorization/github"
+                onClick={handleGithubLogin}
               >
                 Login with GitHub
               </Button>
